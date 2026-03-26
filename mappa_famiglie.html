@@ -2,13 +2,14 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Mappa famiglie botaniche</title>
+<title>Mappa famiglie botaniche — Ugo D'Accardi</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   html, body {
     margin: 0;
     padding: 0;
     height: 100%;
+    font-family: 'Segoe UI', Arial, sans-serif;
   }
   #map {
     width: 100%;
@@ -20,364 +21,573 @@
     left: 10px;
     z-index: 9999;
     background: white;
-    padding: 10px;
-    border: 2px solid gray;
-    max-height: 400px;
+    padding: 10px 12px;
+    border: 2px solid #137139;
+    border-radius: 8px;
+    max-height: calc(100vh - 80px);
     overflow-y: auto;
     font-size: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    min-width: 180px;
   }
+  #fam-panel b {
+    font-size: 13px;
+    color: #137139;
+  }
+  #fam-panel hr {
+    border: none;
+    border-top: 1px solid #c8ddc4;
+    margin: 6px 0;
+  }
+  .fam-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 0;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 2px 4px;
+    transition: background .15s;
+  }
+  .fam-row:hover { background: #f0f7ee; }
+  .fam-row label { cursor: pointer; user-select: none; }
+  .btn-ctrl {
+    font-size: 11px; padding: 3px 8px;
+    border: 1px solid #137139; border-radius: 12px;
+    background: white; color: #137139;
+    cursor: pointer; font-weight: 600;
+    transition: background .15s, color .15s;
+  }
+  .btn-ctrl:hover { background: #137139; color: white; }
+  #fam-count {
+    font-size: 10px;
+    color: #888;
+    margin-left: auto;
+  }
+  /* Pulsante torna all'album */
+  #btn-album {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: #b8860b;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    border-radius: 30px;
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    transition: background .2s, transform .15s;
+  }
+  #btn-album:hover { background: #9a6e09; transform: translateY(-2px); }
 </style>
 </head>
 <body>
 <div id="map"></div>
 
 <div id="fam-panel">
-  <b>Famiglie botaniche</b><br>
-  <button onclick="selectAll()">Tutte</button>
-  <button onclick="selectNone()">Nessuna</button>
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+    <b>Famiglie botaniche</b>
+    <span id="fam-count"></span>
+  </div>
+  <div style="display:flex;gap:4px;margin-bottom:4px;">
+    <button class="btn-ctrl" onclick="selectAll()">Tutte</button>
+    <button class="btn-ctrl" onclick="selectNone()">Nessuna</button>
+  </div>
   <hr>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Acanthaceae" checked onclick="toggleFam('Acanthaceae')">
-    <span style="color:#1f77b4;">&#9679;</span> Acanthaceae
+  <div class="fam-row" onclick="toggleFamClick('Acanthaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Acanthaceae" checked>
+    <span style="color:#1f77b4;font-size:14px;">&#9679;</span>
+    <label for="cb_Acanthaceae">Acanthaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Agaricaceae" checked onclick="toggleFam('Agaricaceae')">
-    <span style="color:#1f77b4;">&#9679;</span> Agaricaceae
+  <div class="fam-row" onclick="toggleFamClick('Agaricaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Agaricaceae" checked>
+    <span style="color:#1f77b4;font-size:14px;">&#9679;</span>
+    <label for="cb_Agaricaceae">Agaricaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">5</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Amaryllidaceae" checked onclick="toggleFam('Amaryllidaceae')">
-    <span style="color:#1f77b4;">&#9679;</span> Amaryllidaceae
+  <div class="fam-row" onclick="toggleFamClick('Amaryllidaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Amaryllidaceae" checked>
+    <span style="color:#1f77b4;font-size:14px;">&#9679;</span>
+    <label for="cb_Amaryllidaceae">Amaryllidaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">5</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Anacardiaceae" checked onclick="toggleFam('Anacardiaceae')">
-    <span style="color:#aec7e8;">&#9679;</span> Anacardiaceae
+  <div class="fam-row" onclick="toggleFamClick('Anacardiaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Anacardiaceae" checked>
+    <span style="color:#aec7e8;font-size:14px;">&#9679;</span>
+    <label for="cb_Anacardiaceae">Anacardiaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Apiaceae" checked onclick="toggleFam('Apiaceae')">
-    <span style="color:#aec7e8;">&#9679;</span> Apiaceae
+  <div class="fam-row" onclick="toggleFamClick('Apiaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Apiaceae" checked>
+    <span style="color:#aec7e8;font-size:14px;">&#9679;</span>
+    <label for="cb_Apiaceae">Apiaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">4</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Apocynaceae" checked onclick="toggleFam('Apocynaceae')">
-    <span style="color:#aec7e8;">&#9679;</span> Apocynaceae
+  <div class="fam-row" onclick="toggleFamClick('Apocynaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Apocynaceae" checked>
+    <span style="color:#aec7e8;font-size:14px;">&#9679;</span>
+    <label for="cb_Apocynaceae">Apocynaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Araceae" checked onclick="toggleFam('Araceae')">
-    <span style="color:#ff7f0e;">&#9679;</span> Araceae
+  <div class="fam-row" onclick="toggleFamClick('Araceae')">
+    <input type="checkbox" class="fam-check" id="cb_Araceae" checked>
+    <span style="color:#ff7f0e;font-size:14px;">&#9679;</span>
+    <label for="cb_Araceae">Araceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">3</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Arecaceae" checked onclick="toggleFam('Arecaceae')">
-    <span style="color:#ff7f0e;">&#9679;</span> Arecaceae
+  <div class="fam-row" onclick="toggleFamClick('Arecaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Arecaceae" checked>
+    <span style="color:#ff7f0e;font-size:14px;">&#9679;</span>
+    <label for="cb_Arecaceae">Arecaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">2</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Asparagaceae" checked onclick="toggleFam('Asparagaceae')">
-    <span style="color:#ff7f0e;">&#9679;</span> Asparagaceae
+  <div class="fam-row" onclick="toggleFamClick('Asparagaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Asparagaceae" checked>
+    <span style="color:#ff7f0e;font-size:14px;">&#9679;</span>
+    <label for="cb_Asparagaceae">Asparagaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">12</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Asphodelaceae" checked onclick="toggleFam('Asphodelaceae')">
-    <span style="color:#ffbb78;">&#9679;</span> Asphodelaceae
+  <div class="fam-row" onclick="toggleFamClick('Asphodelaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Asphodelaceae" checked>
+    <span style="color:#ffbb78;font-size:14px;">&#9679;</span>
+    <label for="cb_Asphodelaceae">Asphodelaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">4</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Aspleniaceae" checked onclick="toggleFam('Aspleniaceae')">
-    <span style="color:#ffbb78;">&#9679;</span> Aspleniaceae
+  <div class="fam-row" onclick="toggleFamClick('Aspleniaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Aspleniaceae" checked>
+    <span style="color:#ffbb78;font-size:14px;">&#9679;</span>
+    <label for="cb_Aspleniaceae">Aspleniaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Asteraceae" checked onclick="toggleFam('Asteraceae')">
-    <span style="color:#ffbb78;">&#9679;</span> Asteraceae
+  <div class="fam-row" onclick="toggleFamClick('Asteraceae')">
+    <input type="checkbox" class="fam-check" id="cb_Asteraceae" checked>
+    <span style="color:#ffbb78;font-size:14px;">&#9679;</span>
+    <label for="cb_Asteraceae">Asteraceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">28</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Boraginaceae" checked onclick="toggleFam('Boraginaceae')">
-    <span style="color:#2ca02c;">&#9679;</span> Boraginaceae
+  <div class="fam-row" onclick="toggleFamClick('Boraginaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Boraginaceae" checked>
+    <span style="color:#2ca02c;font-size:14px;">&#9679;</span>
+    <label for="cb_Boraginaceae">Boraginaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">5</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Brassicaceae" checked onclick="toggleFam('Brassicaceae')">
-    <span style="color:#2ca02c;">&#9679;</span> Brassicaceae
+  <div class="fam-row" onclick="toggleFamClick('Brassicaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Brassicaceae" checked>
+    <span style="color:#2ca02c;font-size:14px;">&#9679;</span>
+    <label for="cb_Brassicaceae">Brassicaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">3</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Bryophyta" checked onclick="toggleFam('Bryophyta')">
-    <span style="color:#98df8a;">&#9679;</span> Bryophyta
+  <div class="fam-row" onclick="toggleFamClick('Bryophyta')">
+    <input type="checkbox" class="fam-check" id="cb_Bryophyta" checked>
+    <span style="color:#98df8a;font-size:14px;">&#9679;</span>
+    <label for="cb_Bryophyta">Bryophyta</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Cactaceae" checked onclick="toggleFam('Cactaceae')">
-    <span style="color:#98df8a;">&#9679;</span> Cactaceae
+  <div class="fam-row" onclick="toggleFamClick('Cactaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Cactaceae" checked>
+    <span style="color:#98df8a;font-size:14px;">&#9679;</span>
+    <label for="cb_Cactaceae">Cactaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">2</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Caprifoliaceae" checked onclick="toggleFam('Caprifoliaceae')">
-    <span style="color:#98df8a;">&#9679;</span> Caprifoliaceae
+  <div class="fam-row" onclick="toggleFamClick('Caprifoliaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Caprifoliaceae" checked>
+    <span style="color:#98df8a;font-size:14px;">&#9679;</span>
+    <label for="cb_Caprifoliaceae">Caprifoliaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Caryophyllaceae" checked onclick="toggleFam('Caryophyllaceae')">
-    <span style="color:#d62728;">&#9679;</span> Caryophyllaceae
+  <div class="fam-row" onclick="toggleFamClick('Caryophyllaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Caryophyllaceae" checked>
+    <span style="color:#d62728;font-size:14px;">&#9679;</span>
+    <label for="cb_Caryophyllaceae">Caryophyllaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">2</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Cicadidae" checked onclick="toggleFam('Cicadidae')">
-    <span style="color:#d62728;">&#9679;</span> Cicadidae
+  <div class="fam-row" onclick="toggleFamClick('Cicadidae')">
+    <input type="checkbox" class="fam-check" id="cb_Cicadidae" checked>
+    <span style="color:#d62728;font-size:14px;">&#9679;</span>
+    <label for="cb_Cicadidae">Cicadidae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Commelinaceae" checked onclick="toggleFam('Commelinaceae')">
-    <span style="color:#d62728;">&#9679;</span> Commelinaceae
+  <div class="fam-row" onclick="toggleFamClick('Commelinaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Commelinaceae" checked>
+    <span style="color:#d62728;font-size:14px;">&#9679;</span>
+    <label for="cb_Commelinaceae">Commelinaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Crassulaceae" checked onclick="toggleFam('Crassulaceae')">
-    <span style="color:#ff9896;">&#9679;</span> Crassulaceae
+  <div class="fam-row" onclick="toggleFamClick('Crassulaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Crassulaceae" checked>
+    <span style="color:#ff9896;font-size:14px;">&#9679;</span>
+    <label for="cb_Crassulaceae">Crassulaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">7</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Cupressaceae" checked onclick="toggleFam('Cupressaceae')">
-    <span style="color:#ff9896;">&#9679;</span> Cupressaceae
+  <div class="fam-row" onclick="toggleFamClick('Cupressaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Cupressaceae" checked>
+    <span style="color:#ff9896;font-size:14px;">&#9679;</span>
+    <label for="cb_Cupressaceae">Cupressaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">4</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Cyperaceae" checked onclick="toggleFam('Cyperaceae')">
-    <span style="color:#ff9896;">&#9679;</span> Cyperaceae
+  <div class="fam-row" onclick="toggleFamClick('Cyperaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Cyperaceae" checked>
+    <span style="color:#ff9896;font-size:14px;">&#9679;</span>
+    <label for="cb_Cyperaceae">Cyperaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Didiereaceae" checked onclick="toggleFam('Didiereaceae')">
-    <span style="color:#9467bd;">&#9679;</span> Didiereaceae
+  <div class="fam-row" onclick="toggleFamClick('Didiereaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Didiereaceae" checked>
+    <span style="color:#9467bd;font-size:14px;">&#9679;</span>
+    <label for="cb_Didiereaceae">Didiereaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Ericaceae" checked onclick="toggleFam('Ericaceae')">
-    <span style="color:#9467bd;">&#9679;</span> Ericaceae
+  <div class="fam-row" onclick="toggleFamClick('Ericaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Ericaceae" checked>
+    <span style="color:#9467bd;font-size:14px;">&#9679;</span>
+    <label for="cb_Ericaceae">Ericaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">2</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Euphorbiaceae" checked onclick="toggleFam('Euphorbiaceae')">
-    <span style="color:#9467bd;">&#9679;</span> Euphorbiaceae
+  <div class="fam-row" onclick="toggleFamClick('Euphorbiaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Euphorbiaceae" checked>
+    <span style="color:#9467bd;font-size:14px;">&#9679;</span>
+    <label for="cb_Euphorbiaceae">Euphorbiaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">9</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Fabaceae" checked onclick="toggleFam('Fabaceae')">
-    <span style="color:#c5b0d5;">&#9679;</span> Fabaceae
+  <div class="fam-row" onclick="toggleFamClick('Fabaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Fabaceae" checked>
+    <span style="color:#c5b0d5;font-size:14px;">&#9679;</span>
+    <label for="cb_Fabaceae">Fabaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">11</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Fagaceae" checked onclick="toggleFam('Fagaceae')">
-    <span style="color:#c5b0d5;">&#9679;</span> Fagaceae
+  <div class="fam-row" onclick="toggleFamClick('Fagaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Fagaceae" checked>
+    <span style="color:#c5b0d5;font-size:14px;">&#9679;</span>
+    <label for="cb_Fagaceae">Fagaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">19</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Fomitopsidaceae" checked onclick="toggleFam('Fomitopsidaceae')">
-    <span style="color:#8c564b;">&#9679;</span> Fomitopsidaceae
+  <div class="fam-row" onclick="toggleFamClick('Fomitopsidaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Fomitopsidaceae" checked>
+    <span style="color:#8c564b;font-size:14px;">&#9679;</span>
+    <label for="cb_Fomitopsidaceae">Fomitopsidaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Geraniaceae" checked onclick="toggleFam('Geraniaceae')">
-    <span style="color:#8c564b;">&#9679;</span> Geraniaceae
+  <div class="fam-row" onclick="toggleFamClick('Geraniaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Geraniaceae" checked>
+    <span style="color:#8c564b;font-size:14px;">&#9679;</span>
+    <label for="cb_Geraniaceae">Geraniaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">3</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Hypnaceae" checked onclick="toggleFam('Hypnaceae')">
-    <span style="color:#8c564b;">&#9679;</span> Hypnaceae
+  <div class="fam-row" onclick="toggleFamClick('Hypnaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Hypnaceae" checked>
+    <span style="color:#8c564b;font-size:14px;">&#9679;</span>
+    <label for="cb_Hypnaceae">Hypnaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Iridaceae" checked onclick="toggleFam('Iridaceae')">
-    <span style="color:#c49c94;">&#9679;</span> Iridaceae
+  <div class="fam-row" onclick="toggleFamClick('Iridaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Iridaceae" checked>
+    <span style="color:#c49c94;font-size:14px;">&#9679;</span>
+    <label for="cb_Iridaceae">Iridaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Lamiaceae" checked onclick="toggleFam('Lamiaceae')">
-    <span style="color:#c49c94;">&#9679;</span> Lamiaceae
+  <div class="fam-row" onclick="toggleFamClick('Lamiaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Lamiaceae" checked>
+    <span style="color:#c49c94;font-size:14px;">&#9679;</span>
+    <label for="cb_Lamiaceae">Lamiaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">10</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Linaceae" checked onclick="toggleFam('Linaceae')">
-    <span style="color:#c49c94;">&#9679;</span> Linaceae
+  <div class="fam-row" onclick="toggleFamClick('Linaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Linaceae" checked>
+    <span style="color:#c49c94;font-size:14px;">&#9679;</span>
+    <label for="cb_Linaceae">Linaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">3</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Loranthaceae" checked onclick="toggleFam('Loranthaceae')">
-    <span style="color:#e377c2;">&#9679;</span> Loranthaceae
+  <div class="fam-row" onclick="toggleFamClick('Loranthaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Loranthaceae" checked>
+    <span style="color:#e377c2;font-size:14px;">&#9679;</span>
+    <label for="cb_Loranthaceae">Loranthaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Malvaceae" checked onclick="toggleFam('Malvaceae')">
-    <span style="color:#e377c2;">&#9679;</span> Malvaceae
+  <div class="fam-row" onclick="toggleFamClick('Malvaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Malvaceae" checked>
+    <span style="color:#e377c2;font-size:14px;">&#9679;</span>
+    <label for="cb_Malvaceae">Malvaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Moraceae" checked onclick="toggleFam('Moraceae')">
-    <span style="color:#e377c2;">&#9679;</span> Moraceae
+  <div class="fam-row" onclick="toggleFamClick('Moraceae')">
+    <input type="checkbox" class="fam-check" id="cb_Moraceae" checked>
+    <span style="color:#e377c2;font-size:14px;">&#9679;</span>
+    <label for="cb_Moraceae">Moraceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">2</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Oleaceae" checked onclick="toggleFam('Oleaceae')">
-    <span style="color:#f7b6d2;">&#9679;</span> Oleaceae
+  <div class="fam-row" onclick="toggleFamClick('Oleaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Oleaceae" checked>
+    <span style="color:#f7b6d2;font-size:14px;">&#9679;</span>
+    <label for="cb_Oleaceae">Oleaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Orchidaceae" checked onclick="toggleFam('Orchidaceae')">
-    <span style="color:#f7b6d2;">&#9679;</span> Orchidaceae
+  <div class="fam-row" onclick="toggleFamClick('Orchidaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Orchidaceae" checked>
+    <span style="color:#f7b6d2;font-size:14px;">&#9679;</span>
+    <label for="cb_Orchidaceae">Orchidaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">3</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Oxalidaceae" checked onclick="toggleFam('Oxalidaceae')">
-    <span style="color:#f7b6d2;">&#9679;</span> Oxalidaceae
+  <div class="fam-row" onclick="toggleFamClick('Oxalidaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Oxalidaceae" checked>
+    <span style="color:#f7b6d2;font-size:14px;">&#9679;</span>
+    <label for="cb_Oxalidaceae">Oxalidaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">2</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Paeoniaceae" checked onclick="toggleFam('Paeoniaceae')">
-    <span style="color:#7f7f7f;">&#9679;</span> Paeoniaceae
+  <div class="fam-row" onclick="toggleFamClick('Paeoniaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Paeoniaceae" checked>
+    <span style="color:#7f7f7f;font-size:14px;">&#9679;</span>
+    <label for="cb_Paeoniaceae">Paeoniaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">5</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Papaveraceae" checked onclick="toggleFam('Papaveraceae')">
-    <span style="color:#7f7f7f;">&#9679;</span> Papaveraceae
+  <div class="fam-row" onclick="toggleFamClick('Papaveraceae')">
+    <input type="checkbox" class="fam-check" id="cb_Papaveraceae" checked>
+    <span style="color:#7f7f7f;font-size:14px;">&#9679;</span>
+    <label for="cb_Papaveraceae">Papaveraceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Pinaceae" checked onclick="toggleFam('Pinaceae')">
-    <span style="color:#c7c7c7;">&#9679;</span> Pinaceae
+  <div class="fam-row" onclick="toggleFamClick('Pinaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Pinaceae" checked>
+    <span style="color:#c7c7c7;font-size:14px;">&#9679;</span>
+    <label for="cb_Pinaceae">Pinaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">3</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Plantaginaceae" checked onclick="toggleFam('Plantaginaceae')">
-    <span style="color:#c7c7c7;">&#9679;</span> Plantaginaceae
+  <div class="fam-row" onclick="toggleFamClick('Plantaginaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Plantaginaceae" checked>
+    <span style="color:#c7c7c7;font-size:14px;">&#9679;</span>
+    <label for="cb_Plantaginaceae">Plantaginaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">3</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Poaceae" checked onclick="toggleFam('Poaceae')">
-    <span style="color:#c7c7c7;">&#9679;</span> Poaceae
+  <div class="fam-row" onclick="toggleFamClick('Poaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Poaceae" checked>
+    <span style="color:#c7c7c7;font-size:14px;">&#9679;</span>
+    <label for="cb_Poaceae">Poaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">11</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Polistirene" checked onclick="toggleFam('Polistirene')">
-    <span style="color:#bcbd22;">&#9679;</span> Polistirene
+  <div class="fam-row" onclick="toggleFamClick('Polistirene')">
+    <input type="checkbox" class="fam-check" id="cb_Polistirene" checked>
+    <span style="color:#bcbd22;font-size:14px;">&#9679;</span>
+    <label for="cb_Polistirene">Polistirene</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Polygonaceae" checked onclick="toggleFam('Polygonaceae')">
-    <span style="color:#bcbd22;">&#9679;</span> Polygonaceae
+  <div class="fam-row" onclick="toggleFamClick('Polygonaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Polygonaceae" checked>
+    <span style="color:#bcbd22;font-size:14px;">&#9679;</span>
+    <label for="cb_Polygonaceae">Polygonaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">2</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Primulaceae" checked onclick="toggleFam('Primulaceae')">
-    <span style="color:#bcbd22;">&#9679;</span> Primulaceae
+  <div class="fam-row" onclick="toggleFamClick('Primulaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Primulaceae" checked>
+    <span style="color:#bcbd22;font-size:14px;">&#9679;</span>
+    <label for="cb_Primulaceae">Primulaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Ranunculaceae" checked onclick="toggleFam('Ranunculaceae')">
-    <span style="color:#dbdb8d;">&#9679;</span> Ranunculaceae
+  <div class="fam-row" onclick="toggleFamClick('Ranunculaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Ranunculaceae" checked>
+    <span style="color:#dbdb8d;font-size:14px;">&#9679;</span>
+    <label for="cb_Ranunculaceae">Ranunculaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">4</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Rhamnaceae" checked onclick="toggleFam('Rhamnaceae')">
-    <span style="color:#dbdb8d;">&#9679;</span> Rhamnaceae
+  <div class="fam-row" onclick="toggleFamClick('Rhamnaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Rhamnaceae" checked>
+    <span style="color:#dbdb8d;font-size:14px;">&#9679;</span>
+    <label for="cb_Rhamnaceae">Rhamnaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">2</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Rosaceae" checked onclick="toggleFam('Rosaceae')">
-    <span style="color:#dbdb8d;">&#9679;</span> Rosaceae
+  <div class="fam-row" onclick="toggleFamClick('Rosaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Rosaceae" checked>
+    <span style="color:#dbdb8d;font-size:14px;">&#9679;</span>
+    <label for="cb_Rosaceae">Rosaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">7</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Rubiaceae" checked onclick="toggleFam('Rubiaceae')">
-    <span style="color:#17becf;">&#9679;</span> Rubiaceae
+  <div class="fam-row" onclick="toggleFamClick('Rubiaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Rubiaceae" checked>
+    <span style="color:#17becf;font-size:14px;">&#9679;</span>
+    <label for="cb_Rubiaceae">Rubiaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Schistostegaceae" checked onclick="toggleFam('Schistostegaceae')">
-    <span style="color:#17becf;">&#9679;</span> Schistostegaceae
+  <div class="fam-row" onclick="toggleFamClick('Schistostegaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Schistostegaceae" checked>
+    <span style="color:#17becf;font-size:14px;">&#9679;</span>
+    <label for="cb_Schistostegaceae">Schistostegaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Solanaceae" checked onclick="toggleFam('Solanaceae')">
-    <span style="color:#17becf;">&#9679;</span> Solanaceae
+  <div class="fam-row" onclick="toggleFamClick('Solanaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Solanaceae" checked>
+    <span style="color:#17becf;font-size:14px;">&#9679;</span>
+    <label for="cb_Solanaceae">Solanaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Tamaricaceae" checked onclick="toggleFam('Tamaricaceae')">
-    <span style="color:#9edae5;">&#9679;</span> Tamaricaceae
+  <div class="fam-row" onclick="toggleFamClick('Tamaricaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Tamaricaceae" checked>
+    <span style="color:#9edae5;font-size:14px;">&#9679;</span>
+    <label for="cb_Tamaricaceae">Tamaricaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">3</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Urticaceae" checked onclick="toggleFam('Urticaceae')">
-    <span style="color:#9edae5;">&#9679;</span> Urticaceae
+  <div class="fam-row" onclick="toggleFamClick('Urticaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Urticaceae" checked>
+    <span style="color:#9edae5;font-size:14px;">&#9679;</span>
+    <label for="cb_Urticaceae">Urticaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">2</span>
   </div>
 
-  <div>
-    <input type="checkbox" class="fam-check" id="Violaceae" checked onclick="toggleFam('Violaceae')">
-    <span style="color:#9edae5;">&#9679;</span> Violaceae
+  <div class="fam-row" onclick="toggleFamClick('Violaceae')">
+    <input type="checkbox" class="fam-check" id="cb_Violaceae" checked>
+    <span style="color:#9edae5;font-size:14px;">&#9679;</span>
+    <label for="cb_Violaceae">Violaceae</label>
+    <span style="font-size:10px;color:#aaa;margin-left:auto;">1</span>
   </div>
 
 </div>
+
+<a id="btn-album" href="album_botanico.html">📖 Album</a>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // DATI DAL PYTHON
 var centerLat = 38.01981829082968;
 var centerLon = 13.373686999126638;
-var famData = {"Acanthaceae": [{"lat": 37.896169, "lon": 14.478983, "popup": "<b>Localit\u00e0:</b> Bosco della Tassita<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Acanthaceae"}], "Agaricaceae": [{"lat": 37.909031, "lon": 14.073511, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Agaricaceae"}, {"lat": 37.909042, "lon": 14.073553, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Agaricaceae"}, {"lat": 37.909611, "lon": 14.075686, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Agaricaceae"}, {"lat": 37.909669, "lon": 14.07575, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Agaricaceae"}, {"lat": 37.909708, "lon": 14.075633, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Agaricaceae"}], "Amaryllidaceae": [{"lat": 37.896206, "lon": 14.479031, "popup": "<b>Localit\u00e0:</b> Bosco della Tassita<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Amaryllidaceae"}, {"lat": 38.02855, "lon": 13.222669, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Amaryllidaceae"}, {"lat": 38.097117, "lon": 13.52655, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Amaryllidaceae"}, {"lat": 37.972078, "lon": 13.247308, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Amaryllidaceae"}, {"lat": 38.061522, "lon": 13.332547, "popup": "<b>Localit\u00e0:</b> Starrabba<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Amaryllidaceae"}], "Anacardiaceae": [{"lat": 38.102469, "lon": 13.526486, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Anacardiaceae"}], "Apiaceae": [{"lat": 38.103664, "lon": 13.519908, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Apiaceae"}, {"lat": 38.112572, "lon": 13.515647, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Apiaceae"}, {"lat": 37.970378, "lon": 13.248642, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Apiaceae"}, {"lat": 37.972061, "lon": 13.247131, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Apiaceae"}], "Apocynaceae": [{"lat": 38.113864, "lon": 13.518686, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Apocynaceae"}], "Araceae": [{"lat": 38.101594, "lon": 13.335811, "popup": "<b>Localit\u00e0:</b> Casa - Interno<br><b>Osservazioni:</b> 5<br><b>Famiglie presenti (3):</b><br>Araceae, Asparagaceae, Euphorbiaceae"}, {"lat": 38.101614, "lon": 13.335819, "popup": "<b>Localit\u00e0:</b> Casa - Interno<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Araceae"}, {"lat": 38.098628, "lon": 13.527503, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Araceae"}], "Arecaceae": [{"lat": 38.098678, "lon": 13.527489, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Arecaceae"}, {"lat": 38.174736, "lon": 12.716853, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Arecaceae"}], "Asparagaceae": [{"lat": 38.027892, "lon": 13.219664, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asparagaceae"}, {"lat": 38.027894, "lon": 13.219664, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asparagaceae"}, {"lat": 38.101672, "lon": 13.335689, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br>Asparagaceae, Moraceae"}, {"lat": 38.101694, "lon": 13.335461, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 7<br><b>Famiglie presenti (5):</b><br>Asparagaceae, Cactaceae, Cyperaceae, Didiereaceae, Euphorbiaceae"}, {"lat": 38.101594, "lon": 13.335811, "popup": "<b>Localit\u00e0:</b> Casa - Interno<br><b>Osservazioni:</b> 5<br><b>Famiglie presenti (3):</b><br>Araceae, Asparagaceae, Euphorbiaceae"}, {"lat": 38.101697, "lon": 13.335806, "popup": "<b>Localit\u00e0:</b> Casa - Interno<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br>Asparagaceae, Euphorbiaceae, Geraniaceae"}, {"lat": 38.101514, "lon": 13.335736, "popup": "<b>Localit\u00e0:</b> Casa - Interno/Balcone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asparagaceae"}, {"lat": 38.103511, "lon": 13.521322, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asparagaceae"}, {"lat": 38.108878, "lon": 13.518569, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asparagaceae"}, {"lat": 38.172319, "lon": 12.717294, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asparagaceae"}, {"lat": 37.925247, "lon": 14.007194, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asparagaceae"}, {"lat": 37.925258, "lon": 14.007186, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asparagaceae"}], "Asphodelaceae": [{"lat": 38.101594, "lon": 13.335811, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asphodelaceae"}, {"lat": 38.098519, "lon": 13.527478, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asphodelaceae"}, {"lat": 38.168978, "lon": 12.719136, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asphodelaceae"}, {"lat": 37.940769, "lon": 14.009231, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asphodelaceae"}], "Aspleniaceae": [{"lat": 38.114297, "lon": 13.515489, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Aspleniaceae"}], "Asteraceae": [{"lat": 38.021533, "lon": 13.215264, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.028397, "lon": 13.222131, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.028614, "lon": 13.222758, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.102844, "lon": 13.526261, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.103642, "lon": 13.519856, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.103756, "lon": 13.524711, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.11315, "lon": 13.515281, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.036892, "lon": 12.590578, "popup": "<b>Localit\u00e0:</b> Erice<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.041128, "lon": 12.589253, "popup": "<b>Localit\u00e0:</b> Erice<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br>Asteraceae, Pinaceae"}, {"lat": 37.610072, "lon": 12.651769, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 37.6103, "lon": 12.652228, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.168011, "lon": 12.720531, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.168017, "lon": 12.720561, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.168794, "lon": 12.719247, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.178806, "lon": 12.717319, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.178808, "lon": 12.717344, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.18765, "lon": 12.727225, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.187656, "lon": 12.727261, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.187775, "lon": 12.728117, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 38.188231, "lon": 12.728944, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 37.913511, "lon": 13.997269, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 37.930314, "lon": 14.010572, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 37.930814, "lon": 14.010492, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 37.930836, "lon": 14.010461, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 37.970247, "lon": 13.246339, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 37.971961, "lon": 13.246672, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 37.972036, "lon": 13.248267, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}, {"lat": 37.972058, "lon": 13.247328, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Asteraceae"}], "Boraginaceae": [{"lat": 38.108828, "lon": 13.518522, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Boraginaceae"}, {"lat": 37.610294, "lon": 12.652231, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Boraginaceae"}, {"lat": 37.610306, "lon": 12.652247, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Boraginaceae"}, {"lat": 37.610772, "lon": 12.653036, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Boraginaceae"}, {"lat": 38.168972, "lon": 12.719175, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Boraginaceae"}], "Brassicaceae": [{"lat": 37.610444, "lon": 12.652411, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Brassicaceae"}, {"lat": 37.612994, "lon": 12.655194, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Brassicaceae"}, {"lat": 38.170531, "lon": 12.718247, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Brassicaceae"}], "Bryophyta": [{"lat": 37.909803, "lon": 14.076231, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Bryophyta"}], "Cactaceae": [{"lat": 38.101619, "lon": 13.335733, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Cactaceae"}, {"lat": 38.101694, "lon": 13.335461, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 7<br><b>Famiglie presenti (5):</b><br>Asparagaceae, Cactaceae, Cyperaceae, Didiereaceae, Euphorbiaceae"}], "Caprifoliaceae": [{"lat": 37.971742, "lon": 13.245364, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Caprifoliaceae"}], "Caryophyllaceae": [{"lat": 37.60905, "lon": 12.652172, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Caryophyllaceae"}, {"lat": 38.171519, "lon": 12.717544, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Caryophyllaceae"}], "Cicadidae": [{"lat": 38.1528194, "lon": 13.3420112, "popup": "<b>Localit\u00e0:</b> Favorita<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br>Cicadidae, Malvaceae, Moraceae"}], "Commelinaceae": [{"lat": 38.101697, "lon": 13.335806, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (2):</b><br>Commelinaceae, Crassulaceae"}], "Crassulaceae": [{"lat": 38.101697, "lon": 13.335589, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br>Crassulaceae, Lamiaceae, Primulaceae"}, {"lat": 38.101697, "lon": 13.335806, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (2):</b><br>Commelinaceae, Crassulaceae"}, {"lat": 38.103658, "lon": 13.519903, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Crassulaceae"}, {"lat": 38.114278, "lon": 13.515472, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Crassulaceae"}, {"lat": 37.909964, "lon": 13.998661, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Crassulaceae"}, {"lat": 37.939144, "lon": 14.009764, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Crassulaceae"}, {"lat": 37.964908, "lon": 13.260064, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Crassulaceae"}], "Cupressaceae": [{"lat": 37.902014, "lon": 14.056872, "popup": "<b>Localit\u00e0:</b> Acerone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br>Cupressaceae, Fagaceae"}, {"lat": 37.904044, "lon": 14.051603, "popup": "<b>Localit\u00e0:</b> Acerone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Cupressaceae"}, {"lat": 38.112656, "lon": 13.515517, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Cupressaceae"}, {"lat": 38.113411, "lon": 13.515411, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Cupressaceae"}], "Cyperaceae": [{"lat": 38.101694, "lon": 13.335461, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 7<br><b>Famiglie presenti (5):</b><br>Asparagaceae, Cactaceae, Cyperaceae, Didiereaceae, Euphorbiaceae"}], "Didiereaceae": [{"lat": 38.101694, "lon": 13.335461, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 7<br><b>Famiglie presenti (5):</b><br>Asparagaceae, Cactaceae, Cyperaceae, Didiereaceae, Euphorbiaceae"}], "Ericaceae": [{"lat": 38.103014, "lon": 13.52625, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Ericaceae"}, {"lat": 38.055567, "lon": 13.322569, "popup": "<b>Localit\u00e0:</b> Starrabba<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Ericaceae"}], "Euphorbiaceae": [{"lat": 38.031386, "lon": 13.226375, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Euphorbiaceae"}, {"lat": 38.101694, "lon": 13.335461, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 7<br><b>Famiglie presenti (5):</b><br>Asparagaceae, Cactaceae, Cyperaceae, Didiereaceae, Euphorbiaceae"}, {"lat": 38.101594, "lon": 13.335811, "popup": "<b>Localit\u00e0:</b> Casa - Interno<br><b>Osservazioni:</b> 5<br><b>Famiglie presenti (3):</b><br>Araceae, Asparagaceae, Euphorbiaceae"}, {"lat": 38.101697, "lon": 13.335806, "popup": "<b>Localit\u00e0:</b> Casa - Interno<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br>Asparagaceae, Euphorbiaceae, Geraniaceae"}, {"lat": 38.1828, "lon": 12.722942, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Euphorbiaceae"}, {"lat": 38.182803, "lon": 12.722944, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Euphorbiaceae"}, {"lat": 37.926431, "lon": 14.007719, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Euphorbiaceae"}, {"lat": 37.926436, "lon": 14.007736, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Euphorbiaceae"}, {"lat": 37.972125, "lon": 13.251194, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Euphorbiaceae"}], "Fabaceae": [{"lat": 38.101742, "lon": 13.527078, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fabaceae"}, {"lat": 38.103983, "lon": 13.520003, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fabaceae"}, {"lat": 38.104953, "lon": 13.520706, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fabaceae"}, {"lat": 37.608664, "lon": 12.652369, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fabaceae"}, {"lat": 37.610511, "lon": 12.652322, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fabaceae"}, {"lat": 37.611106, "lon": 12.653781, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fabaceae"}, {"lat": 38.181228, "lon": 12.720397, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fabaceae"}, {"lat": 38.187606, "lon": 12.727575, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (1):</b><br>Fabaceae"}, {"lat": 37.921214, "lon": 14.003167, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fabaceae"}, {"lat": 37.924172, "lon": 14.006961, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fabaceae"}, {"lat": 37.939072, "lon": 14.009714, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fabaceae"}], "Fagaceae": [{"lat": 37.901072, "lon": 14.056289, "popup": "<b>Localit\u00e0:</b> Acerone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.901867, "lon": 14.057292, "popup": "<b>Localit\u00e0:</b> Acerone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.902014, "lon": 14.056872, "popup": "<b>Localit\u00e0:</b> Acerone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br>Cupressaceae, Fagaceae"}, {"lat": 37.902022, "lon": 14.056883, "popup": "<b>Localit\u00e0:</b> Acerone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.902042, "lon": 14.056761, "popup": "<b>Localit\u00e0:</b> Acerone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.902058, "lon": 14.056886, "popup": "<b>Localit\u00e0:</b> Acerone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br>Fagaceae, Poaceae"}, {"lat": 37.895917, "lon": 14.488294, "popup": "<b>Localit\u00e0:</b> Bosco della Tassita<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.896197, "lon": 14.478894, "popup": "<b>Localit\u00e0:</b> Bosco della Tassita<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 38.101719, "lon": 13.335497, "popup": "<b>Localit\u00e0:</b> Casa - Interno<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.781, "lon": 14.076, "popup": "<b>Localit\u00e0:</b> Faguara<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (2):</b><br>Fagaceae, Ranunculaceae"}, {"lat": 37.899942, "lon": 13.997878, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.903025, "lon": 13.999892, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.910483, "lon": 13.998592, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.912444, "lon": 13.997469, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.916942, "lon": 13.999858, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.909628, "lon": 14.075456, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.909631, "lon": 14.075428, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.911461, "lon": 14.073642, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}, {"lat": 37.912003, "lon": 14.076517, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fagaceae"}], "Fomitopsidaceae": [{"lat": 37.902522, "lon": 14.069103, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Fomitopsidaceae"}], "Geraniaceae": [{"lat": 38.101697, "lon": 13.335806, "popup": "<b>Localit\u00e0:</b> Casa - Interno<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br>Asparagaceae, Euphorbiaceae, Geraniaceae"}, {"lat": 38.105203, "lon": 13.520944, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Geraniaceae"}, {"lat": 38.188989, "lon": 12.732506, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Geraniaceae"}], "Hypnaceae": [{"lat": 37.908533, "lon": 13.998675, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Hypnaceae"}], "Iridaceae": [{"lat": 37.964906, "lon": 13.260125, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Iridaceae"}], "Lamiaceae": [{"lat": 38.101697, "lon": 13.335589, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br>Crassulaceae, Lamiaceae, Primulaceae"}, {"lat": 38.098297, "lon": 13.527456, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Lamiaceae"}, {"lat": 38.098683, "lon": 13.527497, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Lamiaceae"}, {"lat": 38.098783, "lon": 13.527522, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Lamiaceae"}, {"lat": 38.103742, "lon": 13.524697, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Lamiaceae"}, {"lat": 38.104244, "lon": 13.519981, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Lamiaceae"}, {"lat": 38.181267, "lon": 12.720583, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Lamiaceae"}, {"lat": 38.181267, "lon": 12.720636, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Lamiaceae"}, {"lat": 38.187767, "lon": 12.727975, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Lamiaceae"}, {"lat": 38.187769, "lon": 12.727972, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Lamiaceae"}], "Linaceae": [{"lat": 38.188492, "lon": 12.729739, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Linaceae"}, {"lat": 38.188494, "lon": 12.729744, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Linaceae"}, {"lat": 38.188497, "lon": 12.729736, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Linaceae"}], "Loranthaceae": [{"lat": 37.916947, "lon": 13.999861, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (1):</b><br>Loranthaceae"}], "Malvaceae": [{"lat": 38.1528194, "lon": 13.3420112, "popup": "<b>Localit\u00e0:</b> Favorita<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br>Cicadidae, Malvaceae, Moraceae"}], "Moraceae": [{"lat": 38.101672, "lon": 13.335689, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br>Asparagaceae, Moraceae"}, {"lat": 38.1528194, "lon": 13.3420112, "popup": "<b>Localit\u00e0:</b> Favorita<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br>Cicadidae, Malvaceae, Moraceae"}], "Oleaceae": [{"lat": 38.022328, "lon": 13.212978, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Oleaceae"}], "Orchidaceae": [{"lat": 38.108856, "lon": 13.518528, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Orchidaceae"}, {"lat": 37.938539, "lon": 14.009869, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Orchidaceae"}, {"lat": 37.972058, "lon": 13.248403, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Orchidaceae"}], "Oxalidaceae": [{"lat": 38.109269, "lon": 13.519942, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Oxalidaceae"}, {"lat": 38.169403, "lon": 12.718667, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Oxalidaceae"}], "Paeoniaceae": [{"lat": 38.018206, "lon": 13.217719, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Paeoniaceae"}, {"lat": 37.906294, "lon": 13.999492, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Paeoniaceae"}, {"lat": 37.906314, "lon": 13.9995, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Paeoniaceae"}, {"lat": 37.909478, "lon": 13.998525, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Paeoniaceae"}, {"lat": 37.909483, "lon": 13.998528, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Paeoniaceae"}], "Papaveraceae": [{"lat": 38.167961, "lon": 12.720619, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br>Papaveraceae, Rubiaceae, Urticaceae"}], "Pinaceae": [{"lat": 38.102644, "lon": 13.526389, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Pinaceae"}, {"lat": 38.034314, "lon": 12.590106, "popup": "<b>Localit\u00e0:</b> Erice<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Pinaceae"}, {"lat": 38.041128, "lon": 12.589253, "popup": "<b>Localit\u00e0:</b> Erice<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br>Asteraceae, Pinaceae"}], "Plantaginaceae": [{"lat": 38.188661, "lon": 12.730069, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Plantaginaceae"}, {"lat": 38.188706, "lon": 12.730117, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Plantaginaceae"}, {"lat": 37.971747, "lon": 13.245394, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Plantaginaceae"}], "Poaceae": [{"lat": 37.902058, "lon": 14.056886, "popup": "<b>Localit\u00e0:</b> Acerone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br>Fagaceae, Poaceae"}, {"lat": 38.023539, "lon": 13.217319, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Poaceae"}, {"lat": 38.024206, "lon": 13.211889, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Poaceae"}, {"lat": 38.101797, "lon": 13.527047, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Poaceae"}, {"lat": 38.110617, "lon": 13.518819, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Poaceae"}, {"lat": 37.610067, "lon": 12.651897, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Poaceae"}, {"lat": 38.184558, "lon": 12.725175, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Poaceae"}, {"lat": 38.184561, "lon": 12.725178, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Poaceae"}, {"lat": 38.184572, "lon": 12.725178, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Poaceae"}, {"lat": 37.924147, "lon": 14.006989, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Poaceae"}, {"lat": 37.970236, "lon": 13.245997, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Poaceae"}], "Polistirene": [{"lat": 38.169453, "lon": 12.718633, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Polistirene"}], "Polygonaceae": [{"lat": 37.621069, "lon": 12.651672, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Polygonaceae"}, {"lat": 37.971814, "lon": 13.245806, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Polygonaceae"}], "Primulaceae": [{"lat": 38.101697, "lon": 13.335589, "popup": "<b>Localit\u00e0:</b> Casa - Balcone<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br>Crassulaceae, Lamiaceae, Primulaceae"}], "Ranunculaceae": [{"lat": 38.029147, "lon": 13.223258, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Ranunculaceae"}, {"lat": 37.781, "lon": 14.076, "popup": "<b>Localit\u00e0:</b> Faguara<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (2):</b><br>Fagaceae, Ranunculaceae"}, {"lat": 37.610556, "lon": 12.6523, "popup": "<b>Localit\u00e0:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Ranunculaceae"}, {"lat": 37.902969, "lon": 14.070178, "popup": "<b>Localit\u00e0:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Ranunculaceae"}], "Rhamnaceae": [{"lat": 37.921006, "lon": 14.002897, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Rhamnaceae"}, {"lat": 37.921044, "lon": 14.002936, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Rhamnaceae"}], "Rosaceae": [{"lat": 38.030042, "lon": 13.224347, "popup": "<b>Localit\u00e0:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Rosaceae"}, {"lat": 38.179919, "lon": 12.718533, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Rosaceae"}, {"lat": 37.913475, "lon": 13.998036, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Rosaceae"}, {"lat": 37.920089, "lon": 14.002064, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Rosaceae"}, {"lat": 37.920228, "lon": 14.0023, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Rosaceae"}, {"lat": 37.926728, "lon": 14.007892, "popup": "<b>Localit\u00e0:</b> Isnello \u2013 Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Rosaceae"}, {"lat": 37.971869, "lon": 13.246072, "popup": "<b>Localit\u00e0:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Rosaceae"}], "Rubiaceae": [{"lat": 38.167961, "lon": 12.720619, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br>Papaveraceae, Rubiaceae, Urticaceae"}], "Schistostegaceae": [{"lat": 38.16801, "lon": 12.720146, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Schistostegaceae"}], "Solanaceae": [{"lat": 38.176992, "lon": 12.716786, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (1):</b><br>Solanaceae"}], "Tamaricaceae": [{"lat": 38.188028, "lon": 12.733222, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Tamaricaceae"}, {"lat": 38.188031, "lon": 12.733222, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Tamaricaceae"}, {"lat": 38.188122, "lon": 12.733222, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Tamaricaceae"}], "Urticaceae": [{"lat": 38.167942, "lon": 12.720494, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Urticaceae"}, {"lat": 38.167961, "lon": 12.720619, "popup": "<b>Localit\u00e0:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br>Papaveraceae, Rubiaceae, Urticaceae"}], "Violaceae": [{"lat": 38.109261, "lon": 13.519958, "popup": "<b>Localit\u00e0:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br>Violaceae"}]};
+var famData = {"Acanthaceae": [{"lat": 37.896169, "lon": 14.478983, "popup": "<b>Località:</b> Bosco della Tassita<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Acanthaceae<br>", "localita": "Bosco della Tassita"}], "Agaricaceae": [{"lat": 37.909031, "lon": 14.073511, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Agaricaceae<br>", "localita": "Pomo"}, {"lat": 37.909042, "lon": 14.073553, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Agaricaceae<br>", "localita": "Pomo"}, {"lat": 37.909611, "lon": 14.075686, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Agaricaceae<br>", "localita": "Pomo"}, {"lat": 37.909669, "lon": 14.07575, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Agaricaceae<br>", "localita": "Pomo"}, {"lat": 37.909708, "lon": 14.075633, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Agaricaceae<br>", "localita": "Pomo"}], "Amaryllidaceae": [{"lat": 37.896206, "lon": 14.479031, "popup": "<b>Località:</b> Bosco della Tassita<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Amaryllidaceae<br>", "localita": "Bosco della Tassita"}, {"lat": 38.02855, "lon": 13.222669, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Amaryllidaceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 38.097117, "lon": 13.52655, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Amaryllidaceae<br>", "localita": "Catalfano"}, {"lat": 37.972078, "lon": 13.247308, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Amaryllidaceae<br>", "localita": "Kumeta"}, {"lat": 38.061522, "lon": 13.332547, "popup": "<b>Località:</b> Starrabba<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#1f77b4;font-weight:600;\">&#9679;</span> Amaryllidaceae<br>", "localita": "Starrabba"}], "Anacardiaceae": [{"lat": 38.102469, "lon": 13.526486, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#aec7e8;font-weight:600;\">&#9679;</span> Anacardiaceae<br>", "localita": "Catalfano"}], "Apiaceae": [{"lat": 38.103664, "lon": 13.519908, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#aec7e8;font-weight:600;\">&#9679;</span> Apiaceae<br>", "localita": "Catalfano"}, {"lat": 38.112572, "lon": 13.515647, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#aec7e8;font-weight:600;\">&#9679;</span> Apiaceae<br>", "localita": "Catalfano"}, {"lat": 37.970378, "lon": 13.248642, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#aec7e8;font-weight:600;\">&#9679;</span> Apiaceae<br>", "localita": "Kumeta"}, {"lat": 37.972061, "lon": 13.247131, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#aec7e8;font-weight:600;\">&#9679;</span> Apiaceae<br>", "localita": "Kumeta"}], "Apocynaceae": [{"lat": 38.113864, "lon": 13.518686, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#aec7e8;font-weight:600;\">&#9679;</span> Apocynaceae<br>", "localita": "Catalfano"}], "Araceae": [{"lat": 38.101594, "lon": 13.335811, "popup": "<b>Località:</b> Casa - Interno<br><b>Osservazioni:</b> 5<br><b>Famiglie presenti (3):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Araceae<br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Casa - Interno"}, {"lat": 38.101614, "lon": 13.335819, "popup": "<b>Località:</b> Casa - Interno<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Araceae<br>", "localita": "Casa - Interno"}, {"lat": 38.098628, "lon": 13.527503, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Araceae<br>", "localita": "Catalfano"}], "Arecaceae": [{"lat": 38.098678, "lon": 13.527489, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Arecaceae<br>", "localita": "Catalfano"}, {"lat": 38.174736, "lon": 12.716853, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Arecaceae<br>", "localita": "Grotta dei Cavalli"}], "Asparagaceae": [{"lat": 38.027892, "lon": 13.219664, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 38.027894, "lon": 13.219664, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 38.101672, "lon": 13.335689, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#e377c2;font-weight:600;\">&#9679;</span> Moraceae<br>", "localita": "Casa - Balcone"}, {"lat": 38.101694, "lon": 13.335461, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 7<br><b>Famiglie presenti (5):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#98df8a;font-weight:600;\">&#9679;</span> Cactaceae<br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Cyperaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Didiereaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Casa - Balcone"}, {"lat": 38.101594, "lon": 13.335811, "popup": "<b>Località:</b> Casa - Interno<br><b>Osservazioni:</b> 5<br><b>Famiglie presenti (3):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Araceae<br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Casa - Interno"}, {"lat": 38.101697, "lon": 13.335806, "popup": "<b>Località:</b> Casa - Interno<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br><span style=\"color:#8c564b;font-weight:600;\">&#9679;</span> Geraniaceae<br>", "localita": "Casa - Interno"}, {"lat": 38.101514, "lon": 13.335736, "popup": "<b>Località:</b> Casa - Interno/Balcone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br>", "localita": "Casa - Interno/Balcone"}, {"lat": 38.103511, "lon": 13.521322, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br>", "localita": "Catalfano"}, {"lat": 38.108878, "lon": 13.518569, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br>", "localita": "Catalfano"}, {"lat": 38.172319, "lon": 12.717294, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 37.925247, "lon": 14.007194, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.925258, "lon": 14.007186, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br>", "localita": "Isnello – Piano Zucchi"}], "Asphodelaceae": [{"lat": 38.101594, "lon": 13.335811, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asphodelaceae<br>", "localita": "Casa - Balcone"}, {"lat": 38.098519, "lon": 13.527478, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asphodelaceae<br>", "localita": "Catalfano"}, {"lat": 38.168978, "lon": 12.719136, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asphodelaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 37.940769, "lon": 14.009231, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asphodelaceae<br>", "localita": "Isnello – Piano Zucchi"}], "Aspleniaceae": [{"lat": 38.114297, "lon": 13.515489, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Aspleniaceae<br>", "localita": "Catalfano"}], "Asteraceae": [{"lat": 38.021533, "lon": 13.215264, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 38.028397, "lon": 13.222131, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 38.028614, "lon": 13.222758, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 38.102844, "lon": 13.526261, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Catalfano"}, {"lat": 38.103642, "lon": 13.519856, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Catalfano"}, {"lat": 38.103756, "lon": 13.524711, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Catalfano"}, {"lat": 38.11315, "lon": 13.515281, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Catalfano"}, {"lat": 38.036892, "lon": 12.590578, "popup": "<b>Località:</b> Erice<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Erice"}, {"lat": 38.041128, "lon": 12.589253, "popup": "<b>Località:</b> Erice<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Pinaceae<br>", "localita": "Erice"}, {"lat": 37.610072, "lon": 12.651769, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 37.6103, "lon": 12.652228, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 38.168011, "lon": 12.720531, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.168017, "lon": 12.720561, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.168794, "lon": 12.719247, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.178806, "lon": 12.717319, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.178808, "lon": 12.717344, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.18765, "lon": 12.727225, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.187656, "lon": 12.727261, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.187775, "lon": 12.728117, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.188231, "lon": 12.728944, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 37.913511, "lon": 13.997269, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.930314, "lon": 14.010572, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.930814, "lon": 14.010492, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.930836, "lon": 14.010461, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.970247, "lon": 13.246339, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Kumeta"}, {"lat": 37.971961, "lon": 13.246672, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Kumeta"}, {"lat": 37.972036, "lon": 13.248267, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Kumeta"}, {"lat": 37.972058, "lon": 13.247328, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br>", "localita": "Kumeta"}], "Boraginaceae": [{"lat": 38.108828, "lon": 13.518522, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#2ca02c;font-weight:600;\">&#9679;</span> Boraginaceae<br>", "localita": "Catalfano"}, {"lat": 37.610294, "lon": 12.652231, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#2ca02c;font-weight:600;\">&#9679;</span> Boraginaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 37.610306, "lon": 12.652247, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#2ca02c;font-weight:600;\">&#9679;</span> Boraginaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 37.610772, "lon": 12.653036, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#2ca02c;font-weight:600;\">&#9679;</span> Boraginaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 38.168972, "lon": 12.719175, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#2ca02c;font-weight:600;\">&#9679;</span> Boraginaceae<br>", "localita": "Grotta dei Cavalli"}], "Brassicaceae": [{"lat": 37.610444, "lon": 12.652411, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#2ca02c;font-weight:600;\">&#9679;</span> Brassicaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 37.612994, "lon": 12.655194, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#2ca02c;font-weight:600;\">&#9679;</span> Brassicaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 38.170531, "lon": 12.718247, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#2ca02c;font-weight:600;\">&#9679;</span> Brassicaceae<br>", "localita": "Grotta dei Cavalli"}], "Bryophyta": [{"lat": 37.909803, "lon": 14.076231, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#98df8a;font-weight:600;\">&#9679;</span> Bryophyta<br>", "localita": "Pomo"}], "Cactaceae": [{"lat": 38.101619, "lon": 13.335733, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#98df8a;font-weight:600;\">&#9679;</span> Cactaceae<br>", "localita": "Casa - Balcone"}, {"lat": 38.101694, "lon": 13.335461, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 7<br><b>Famiglie presenti (5):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#98df8a;font-weight:600;\">&#9679;</span> Cactaceae<br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Cyperaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Didiereaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Casa - Balcone"}], "Caprifoliaceae": [{"lat": 37.971742, "lon": 13.245364, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#98df8a;font-weight:600;\">&#9679;</span> Caprifoliaceae<br>", "localita": "Kumeta"}], "Caryophyllaceae": [{"lat": 37.60905, "lon": 12.652172, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#d62728;font-weight:600;\">&#9679;</span> Caryophyllaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 38.171519, "lon": 12.717544, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#d62728;font-weight:600;\">&#9679;</span> Caryophyllaceae<br>", "localita": "Grotta dei Cavalli"}], "Cicadidae": [{"lat": 38.1528194, "lon": 13.3420112, "popup": "<b>Località:</b> Favorita<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br><span style=\"color:#d62728;font-weight:600;\">&#9679;</span> Cicadidae<br><span style=\"color:#e377c2;font-weight:600;\">&#9679;</span> Malvaceae<br><span style=\"color:#e377c2;font-weight:600;\">&#9679;</span> Moraceae<br>", "localita": "Favorita"}], "Commelinaceae": [{"lat": 38.101697, "lon": 13.335806, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (2):</b><br><span style=\"color:#d62728;font-weight:600;\">&#9679;</span> Commelinaceae<br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Crassulaceae<br>", "localita": "Casa - Balcone"}], "Crassulaceae": [{"lat": 38.101697, "lon": 13.335589, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Crassulaceae<br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br><span style=\"color:#bcbd22;font-weight:600;\">&#9679;</span> Primulaceae<br>", "localita": "Casa - Balcone"}, {"lat": 38.101697, "lon": 13.335806, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (2):</b><br><span style=\"color:#d62728;font-weight:600;\">&#9679;</span> Commelinaceae<br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Crassulaceae<br>", "localita": "Casa - Balcone"}, {"lat": 38.103658, "lon": 13.519903, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Crassulaceae<br>", "localita": "Catalfano"}, {"lat": 38.114278, "lon": 13.515472, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Crassulaceae<br>", "localita": "Catalfano"}, {"lat": 37.909964, "lon": 13.998661, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Crassulaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.939144, "lon": 14.009764, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Crassulaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.964908, "lon": 13.260064, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Crassulaceae<br>", "localita": "Kumeta"}], "Cupressaceae": [{"lat": 37.902014, "lon": 14.056872, "popup": "<b>Località:</b> Acerone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Cupressaceae<br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Acerone"}, {"lat": 37.904044, "lon": 14.051603, "popup": "<b>Località:</b> Acerone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Cupressaceae<br>", "localita": "Acerone"}, {"lat": 38.112656, "lon": 13.515517, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Cupressaceae<br>", "localita": "Catalfano"}, {"lat": 38.113411, "lon": 13.515411, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Cupressaceae<br>", "localita": "Catalfano"}], "Cyperaceae": [{"lat": 38.101694, "lon": 13.335461, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 7<br><b>Famiglie presenti (5):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#98df8a;font-weight:600;\">&#9679;</span> Cactaceae<br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Cyperaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Didiereaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Casa - Balcone"}], "Didiereaceae": [{"lat": 38.101694, "lon": 13.335461, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 7<br><b>Famiglie presenti (5):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#98df8a;font-weight:600;\">&#9679;</span> Cactaceae<br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Cyperaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Didiereaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Casa - Balcone"}], "Ericaceae": [{"lat": 38.103014, "lon": 13.52625, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Ericaceae<br>", "localita": "Catalfano"}, {"lat": 38.055567, "lon": 13.322569, "popup": "<b>Località:</b> Starrabba<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Ericaceae<br>", "localita": "Starrabba"}], "Euphorbiaceae": [{"lat": 38.031386, "lon": 13.226375, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 38.101694, "lon": 13.335461, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 7<br><b>Famiglie presenti (5):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#98df8a;font-weight:600;\">&#9679;</span> Cactaceae<br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Cyperaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Didiereaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Casa - Balcone"}, {"lat": 38.101594, "lon": 13.335811, "popup": "<b>Località:</b> Casa - Interno<br><b>Osservazioni:</b> 5<br><b>Famiglie presenti (3):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Araceae<br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Casa - Interno"}, {"lat": 38.101697, "lon": 13.335806, "popup": "<b>Località:</b> Casa - Interno<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br><span style=\"color:#8c564b;font-weight:600;\">&#9679;</span> Geraniaceae<br>", "localita": "Casa - Interno"}, {"lat": 38.1828, "lon": 12.722942, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.182803, "lon": 12.722944, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 37.926431, "lon": 14.007719, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.926436, "lon": 14.007736, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.972125, "lon": 13.251194, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br>", "localita": "Kumeta"}], "Fabaceae": [{"lat": 38.101742, "lon": 13.527078, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Catalfano"}, {"lat": 38.103983, "lon": 13.520003, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Catalfano"}, {"lat": 38.104953, "lon": 13.520706, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Catalfano"}, {"lat": 37.608664, "lon": 12.652369, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 37.610511, "lon": 12.652322, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 37.611106, "lon": 12.653781, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 38.181228, "lon": 12.720397, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.187606, "lon": 12.727575, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 37.921214, "lon": 14.003167, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.924172, "lon": 14.006961, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.939072, "lon": 14.009714, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fabaceae<br>", "localita": "Isnello – Piano Zucchi"}], "Fagaceae": [{"lat": 37.901072, "lon": 14.056289, "popup": "<b>Località:</b> Acerone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Acerone"}, {"lat": 37.901867, "lon": 14.057292, "popup": "<b>Località:</b> Acerone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Acerone"}, {"lat": 37.902014, "lon": 14.056872, "popup": "<b>Località:</b> Acerone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Cupressaceae<br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Acerone"}, {"lat": 37.902022, "lon": 14.056883, "popup": "<b>Località:</b> Acerone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Acerone"}, {"lat": 37.902042, "lon": 14.056761, "popup": "<b>Località:</b> Acerone<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Acerone"}, {"lat": 37.902058, "lon": 14.056886, "popup": "<b>Località:</b> Acerone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Acerone"}, {"lat": 37.895917, "lon": 14.488294, "popup": "<b>Località:</b> Bosco della Tassita<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Bosco della Tassita"}, {"lat": 37.896197, "lon": 14.478894, "popup": "<b>Località:</b> Bosco della Tassita<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Bosco della Tassita"}, {"lat": 38.101719, "lon": 13.335497, "popup": "<b>Località:</b> Casa - Interno<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Casa - Interno"}, {"lat": 37.781, "lon": 14.076, "popup": "<b>Località:</b> Faguara<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (2):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Ranunculaceae<br>", "localita": "Faguara"}, {"lat": 37.899942, "lon": 13.997878, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.903025, "lon": 13.999892, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.910483, "lon": 13.998592, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.912444, "lon": 13.997469, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.916942, "lon": 13.999858, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.909628, "lon": 14.075456, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Pomo"}, {"lat": 37.909631, "lon": 14.075428, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Pomo"}, {"lat": 37.911461, "lon": 14.073642, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Pomo"}, {"lat": 37.912003, "lon": 14.076517, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br>", "localita": "Pomo"}], "Fomitopsidaceae": [{"lat": 37.902522, "lon": 14.069103, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#8c564b;font-weight:600;\">&#9679;</span> Fomitopsidaceae<br>", "localita": "Pomo"}], "Geraniaceae": [{"lat": 38.101697, "lon": 13.335806, "popup": "<b>Località:</b> Casa - Interno<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#9467bd;font-weight:600;\">&#9679;</span> Euphorbiaceae<br><span style=\"color:#8c564b;font-weight:600;\">&#9679;</span> Geraniaceae<br>", "localita": "Casa - Interno"}, {"lat": 38.105203, "lon": 13.520944, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#8c564b;font-weight:600;\">&#9679;</span> Geraniaceae<br>", "localita": "Catalfano"}, {"lat": 38.188989, "lon": 12.732506, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#8c564b;font-weight:600;\">&#9679;</span> Geraniaceae<br>", "localita": "Grotta dei Cavalli"}], "Hypnaceae": [{"lat": 37.908533, "lon": 13.998675, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#8c564b;font-weight:600;\">&#9679;</span> Hypnaceae<br>", "localita": "Isnello – Piano Zucchi"}], "Iridaceae": [{"lat": 37.964906, "lon": 13.260125, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Iridaceae<br>", "localita": "Kumeta"}], "Lamiaceae": [{"lat": 38.101697, "lon": 13.335589, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Crassulaceae<br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br><span style=\"color:#bcbd22;font-weight:600;\">&#9679;</span> Primulaceae<br>", "localita": "Casa - Balcone"}, {"lat": 38.098297, "lon": 13.527456, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br>", "localita": "Catalfano"}, {"lat": 38.098683, "lon": 13.527497, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br>", "localita": "Catalfano"}, {"lat": 38.098783, "lon": 13.527522, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br>", "localita": "Catalfano"}, {"lat": 38.103742, "lon": 13.524697, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br>", "localita": "Catalfano"}, {"lat": 38.104244, "lon": 13.519981, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br>", "localita": "Catalfano"}, {"lat": 38.181267, "lon": 12.720583, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.181267, "lon": 12.720636, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.187767, "lon": 12.727975, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.187769, "lon": 12.727972, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br>", "localita": "Grotta dei Cavalli"}], "Linaceae": [{"lat": 38.188492, "lon": 12.729739, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Linaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.188494, "lon": 12.729744, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Linaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.188497, "lon": 12.729736, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Linaceae<br>", "localita": "Grotta dei Cavalli"}], "Loranthaceae": [{"lat": 37.916947, "lon": 13.999861, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (1):</b><br><span style=\"color:#e377c2;font-weight:600;\">&#9679;</span> Loranthaceae<br>", "localita": "Isnello – Piano Zucchi"}], "Malvaceae": [{"lat": 38.1528194, "lon": 13.3420112, "popup": "<b>Località:</b> Favorita<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br><span style=\"color:#d62728;font-weight:600;\">&#9679;</span> Cicadidae<br><span style=\"color:#e377c2;font-weight:600;\">&#9679;</span> Malvaceae<br><span style=\"color:#e377c2;font-weight:600;\">&#9679;</span> Moraceae<br>", "localita": "Favorita"}], "Moraceae": [{"lat": 38.101672, "lon": 13.335689, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br><span style=\"color:#ff7f0e;font-weight:600;\">&#9679;</span> Asparagaceae<br><span style=\"color:#e377c2;font-weight:600;\">&#9679;</span> Moraceae<br>", "localita": "Casa - Balcone"}, {"lat": 38.1528194, "lon": 13.3420112, "popup": "<b>Località:</b> Favorita<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br><span style=\"color:#d62728;font-weight:600;\">&#9679;</span> Cicadidae<br><span style=\"color:#e377c2;font-weight:600;\">&#9679;</span> Malvaceae<br><span style=\"color:#e377c2;font-weight:600;\">&#9679;</span> Moraceae<br>", "localita": "Favorita"}], "Oleaceae": [{"lat": 38.022328, "lon": 13.212978, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#f7b6d2;font-weight:600;\">&#9679;</span> Oleaceae<br>", "localita": "Cannavera - Montagna"}], "Orchidaceae": [{"lat": 38.108856, "lon": 13.518528, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#f7b6d2;font-weight:600;\">&#9679;</span> Orchidaceae<br>", "localita": "Catalfano"}, {"lat": 37.938539, "lon": 14.009869, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#f7b6d2;font-weight:600;\">&#9679;</span> Orchidaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.972058, "lon": 13.248403, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#f7b6d2;font-weight:600;\">&#9679;</span> Orchidaceae<br>", "localita": "Kumeta"}], "Oxalidaceae": [{"lat": 38.109269, "lon": 13.519942, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#f7b6d2;font-weight:600;\">&#9679;</span> Oxalidaceae<br>", "localita": "Catalfano"}, {"lat": 38.169403, "lon": 12.718667, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#f7b6d2;font-weight:600;\">&#9679;</span> Oxalidaceae<br>", "localita": "Grotta dei Cavalli"}], "Paeoniaceae": [{"lat": 38.018206, "lon": 13.217719, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#7f7f7f;font-weight:600;\">&#9679;</span> Paeoniaceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 37.906294, "lon": 13.999492, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#7f7f7f;font-weight:600;\">&#9679;</span> Paeoniaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.906314, "lon": 13.9995, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#7f7f7f;font-weight:600;\">&#9679;</span> Paeoniaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.909478, "lon": 13.998525, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#7f7f7f;font-weight:600;\">&#9679;</span> Paeoniaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.909483, "lon": 13.998528, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#7f7f7f;font-weight:600;\">&#9679;</span> Paeoniaceae<br>", "localita": "Isnello – Piano Zucchi"}], "Papaveraceae": [{"lat": 38.167961, "lon": 12.720619, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br><span style=\"color:#7f7f7f;font-weight:600;\">&#9679;</span> Papaveraceae<br><span style=\"color:#17becf;font-weight:600;\">&#9679;</span> Rubiaceae<br><span style=\"color:#9edae5;font-weight:600;\">&#9679;</span> Urticaceae<br>", "localita": "Grotta dei Cavalli"}], "Pinaceae": [{"lat": 38.102644, "lon": 13.526389, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Pinaceae<br>", "localita": "Catalfano"}, {"lat": 38.034314, "lon": 12.590106, "popup": "<b>Località:</b> Erice<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Pinaceae<br>", "localita": "Erice"}, {"lat": 38.041128, "lon": 12.589253, "popup": "<b>Località:</b> Erice<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br><span style=\"color:#ffbb78;font-weight:600;\">&#9679;</span> Asteraceae<br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Pinaceae<br>", "localita": "Erice"}], "Plantaginaceae": [{"lat": 38.188661, "lon": 12.730069, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Plantaginaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.188706, "lon": 12.730117, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Plantaginaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 37.971747, "lon": 13.245394, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Plantaginaceae<br>", "localita": "Kumeta"}], "Poaceae": [{"lat": 37.902058, "lon": 14.056886, "popup": "<b>Località:</b> Acerone<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (2):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Acerone"}, {"lat": 38.023539, "lon": 13.217319, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 38.024206, "lon": 13.211889, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 38.101797, "lon": 13.527047, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Catalfano"}, {"lat": 38.110617, "lon": 13.518819, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Catalfano"}, {"lat": 37.610067, "lon": 12.651897, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 38.184558, "lon": 12.725175, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.184561, "lon": 12.725178, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.184572, "lon": 12.725178, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 37.924147, "lon": 14.006989, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.970236, "lon": 13.245997, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#c7c7c7;font-weight:600;\">&#9679;</span> Poaceae<br>", "localita": "Kumeta"}], "Polistirene": [{"lat": 38.169453, "lon": 12.718633, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#bcbd22;font-weight:600;\">&#9679;</span> Polistirene<br>", "localita": "Grotta dei Cavalli"}], "Polygonaceae": [{"lat": 37.621069, "lon": 12.651672, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#bcbd22;font-weight:600;\">&#9679;</span> Polygonaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 37.971814, "lon": 13.245806, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#bcbd22;font-weight:600;\">&#9679;</span> Polygonaceae<br>", "localita": "Kumeta"}], "Primulaceae": [{"lat": 38.101697, "lon": 13.335589, "popup": "<b>Località:</b> Casa - Balcone<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (3):</b><br><span style=\"color:#ff9896;font-weight:600;\">&#9679;</span> Crassulaceae<br><span style=\"color:#c49c94;font-weight:600;\">&#9679;</span> Lamiaceae<br><span style=\"color:#bcbd22;font-weight:600;\">&#9679;</span> Primulaceae<br>", "localita": "Casa - Balcone"}], "Ranunculaceae": [{"lat": 38.029147, "lon": 13.223258, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Ranunculaceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 37.781, "lon": 14.076, "popup": "<b>Località:</b> Faguara<br><b>Osservazioni:</b> 4<br><b>Famiglie presenti (2):</b><br><span style=\"color:#c5b0d5;font-weight:600;\">&#9679;</span> Fagaceae<br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Ranunculaceae<br>", "localita": "Faguara"}, {"lat": 37.610556, "lon": 12.6523, "popup": "<b>Località:</b> Gorghi Tondi - Riserva Naturale<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Ranunculaceae<br>", "localita": "Gorghi Tondi - Riserva Naturale"}, {"lat": 37.902969, "lon": 14.070178, "popup": "<b>Località:</b> Pomo<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Ranunculaceae<br>", "localita": "Pomo"}], "Rhamnaceae": [{"lat": 37.921006, "lon": 14.002897, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Rhamnaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.921044, "lon": 14.002936, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Rhamnaceae<br>", "localita": "Isnello – Piano Zucchi"}], "Rosaceae": [{"lat": 38.030042, "lon": 13.224347, "popup": "<b>Località:</b> Cannavera - Montagna<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Rosaceae<br>", "localita": "Cannavera - Montagna"}, {"lat": 38.179919, "lon": 12.718533, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Rosaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 37.913475, "lon": 13.998036, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Rosaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.920089, "lon": 14.002064, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Rosaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.920228, "lon": 14.0023, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Rosaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.926728, "lon": 14.007892, "popup": "<b>Località:</b> Isnello – Piano Zucchi<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Rosaceae<br>", "localita": "Isnello – Piano Zucchi"}, {"lat": 37.971869, "lon": 13.246072, "popup": "<b>Località:</b> Kumeta<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#dbdb8d;font-weight:600;\">&#9679;</span> Rosaceae<br>", "localita": "Kumeta"}], "Rubiaceae": [{"lat": 38.167961, "lon": 12.720619, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br><span style=\"color:#7f7f7f;font-weight:600;\">&#9679;</span> Papaveraceae<br><span style=\"color:#17becf;font-weight:600;\">&#9679;</span> Rubiaceae<br><span style=\"color:#9edae5;font-weight:600;\">&#9679;</span> Urticaceae<br>", "localita": "Grotta dei Cavalli"}], "Schistostegaceae": [{"lat": 38.16801, "lon": 12.720146, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#17becf;font-weight:600;\">&#9679;</span> Schistostegaceae<br>", "localita": "Grotta dei Cavalli"}], "Solanaceae": [{"lat": 38.176992, "lon": 12.716786, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 2<br><b>Famiglie presenti (1):</b><br><span style=\"color:#17becf;font-weight:600;\">&#9679;</span> Solanaceae<br>", "localita": "Grotta dei Cavalli"}], "Tamaricaceae": [{"lat": 38.188028, "lon": 12.733222, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9edae5;font-weight:600;\">&#9679;</span> Tamaricaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.188031, "lon": 12.733222, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9edae5;font-weight:600;\">&#9679;</span> Tamaricaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.188122, "lon": 12.733222, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9edae5;font-weight:600;\">&#9679;</span> Tamaricaceae<br>", "localita": "Grotta dei Cavalli"}], "Urticaceae": [{"lat": 38.167942, "lon": 12.720494, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9edae5;font-weight:600;\">&#9679;</span> Urticaceae<br>", "localita": "Grotta dei Cavalli"}, {"lat": 38.167961, "lon": 12.720619, "popup": "<b>Località:</b> Grotta dei Cavalli<br><b>Osservazioni:</b> 3<br><b>Famiglie presenti (3):</b><br><span style=\"color:#7f7f7f;font-weight:600;\">&#9679;</span> Papaveraceae<br><span style=\"color:#17becf;font-weight:600;\">&#9679;</span> Rubiaceae<br><span style=\"color:#9edae5;font-weight:600;\">&#9679;</span> Urticaceae<br>", "localita": "Grotta dei Cavalli"}], "Violaceae": [{"lat": 38.109261, "lon": 13.519958, "popup": "<b>Località:</b> Catalfano<br><b>Osservazioni:</b> 1<br><b>Famiglie presenti (1):</b><br><span style=\"color:#9edae5;font-weight:600;\">&#9679;</span> Violaceae<br>", "localita": "Catalfano"}]};
 var famColors = {"Acanthaceae": "#1f77b4", "Agaricaceae": "#1f77b4", "Amaryllidaceae": "#1f77b4", "Anacardiaceae": "#aec7e8", "Apiaceae": "#aec7e8", "Apocynaceae": "#aec7e8", "Araceae": "#ff7f0e", "Arecaceae": "#ff7f0e", "Asparagaceae": "#ff7f0e", "Asphodelaceae": "#ffbb78", "Aspleniaceae": "#ffbb78", "Asteraceae": "#ffbb78", "Boraginaceae": "#2ca02c", "Brassicaceae": "#2ca02c", "Bryophyta": "#98df8a", "Cactaceae": "#98df8a", "Caprifoliaceae": "#98df8a", "Caryophyllaceae": "#d62728", "Cicadidae": "#d62728", "Commelinaceae": "#d62728", "Crassulaceae": "#ff9896", "Cupressaceae": "#ff9896", "Cyperaceae": "#ff9896", "Didiereaceae": "#9467bd", "Ericaceae": "#9467bd", "Euphorbiaceae": "#9467bd", "Fabaceae": "#c5b0d5", "Fagaceae": "#c5b0d5", "Fomitopsidaceae": "#8c564b", "Geraniaceae": "#8c564b", "Hypnaceae": "#8c564b", "Iridaceae": "#c49c94", "Lamiaceae": "#c49c94", "Linaceae": "#c49c94", "Loranthaceae": "#e377c2", "Malvaceae": "#e377c2", "Moraceae": "#e377c2", "Oleaceae": "#f7b6d2", "Orchidaceae": "#f7b6d2", "Oxalidaceae": "#f7b6d2", "Paeoniaceae": "#7f7f7f", "Papaveraceae": "#7f7f7f", "Pinaceae": "#c7c7c7", "Plantaginaceae": "#c7c7c7", "Poaceae": "#c7c7c7", "Polistirene": "#bcbd22", "Polygonaceae": "#bcbd22", "Primulaceae": "#bcbd22", "Ranunculaceae": "#dbdb8d", "Rhamnaceae": "#dbdb8d", "Rosaceae": "#dbdb8d", "Rubiaceae": "#17becf", "Schistostegaceae": "#17becf", "Solanaceae": "#17becf", "Tamaricaceae": "#9edae5", "Urticaceae": "#9edae5", "Violaceae": "#9edae5"};
 
 // MAPPA
 var map = L.map('map').setView([centerLat, centerLon], 8);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '&copy; OpenStreetMap contributors'
+    attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
 // LAYER PER FAMIGLIA
 var famLayers = {};
+var activeCount = 0;
 
 for (var fam in famData) {
     var layer = L.layerGroup();
     famData[fam].forEach(function(p) {
         L.circleMarker([p.lat, p.lon], {
-            radius: 6,
+            radius: 7,
             color: famColors[fam],
             fillColor: famColors[fam],
-            fillOpacity: 0.85
-        }).bindPopup(p.popup).addTo(layer);
+            fillOpacity: 0.85,
+            weight: 1.5
+        }).bindPopup(p.popup, {maxWidth: 220}).addTo(layer);
     });
     layer.addTo(map);
     famLayers[fam] = layer;
+    activeCount++;
 }
 
-// FUNZIONI DI CONTROLLO
-function toggleFam(fam) {
-    var cb = document.getElementById(fam);
-    if (cb.checked) {
+updateCount();
+
+function updateCount() {
+    var tot = Object.keys(famLayers).length;
+    var act = Object.values(famLayers).filter(function(l) {
+        return map.hasLayer(l);
+    }).length;
+    document.getElementById('fam-count').textContent = '(' + act + '/' + tot + ')';
+}
+
+// Click sulla riga intera (non solo checkbox)
+function toggleFamClick(fam) {
+    var cb = document.getElementById('cb_' + fam);
+    cb.checked = !cb.checked;
+    applyToggle(fam, cb.checked);
+}
+
+// Previeni doppio-toggle se click diretto sul checkbox
+document.querySelectorAll('.fam-check').forEach(function(cb) {
+    cb.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var fam = this.id.replace('cb_', '');
+        applyToggle(fam, this.checked);
+    });
+});
+
+function applyToggle(fam, show) {
+    if (show) {
         map.addLayer(famLayers[fam]);
     } else {
         map.removeLayer(famLayers[fam]);
     }
+    updateCount();
 }
 
 function selectAll() {
     for (var fam in famLayers) {
-        document.getElementById(fam).checked = true;
+        document.getElementById('cb_' + fam).checked = true;
         map.addLayer(famLayers[fam]);
     }
+    updateCount();
 }
 
 function selectNone() {
     for (var fam in famLayers) {
-        document.getElementById(fam).checked = false;
+        document.getElementById('cb_' + fam).checked = false;
         map.removeLayer(famLayers[fam]);
     }
+    updateCount();
 }
 </script>
 </body>
